@@ -6,6 +6,8 @@ import { confirmParticipants } from './routes/confirm-participant';
 import cors from '@fastify/cors';
 import { createActivity } from './routes/create-activity';
 import { getActivities } from './routes/get-activities';
+import { createLink } from './routes/create-link';
+import { getLink } from './routes/get-links';
 
 const app = fastify();
 
@@ -25,6 +27,8 @@ confirmTrip(app);
 confirmParticipants(app);
 createActivity(app);
 getActivities(app);
+createLink(app);
+getLink(app);
 
 
 app.listen({port: 3000}).then(() => {
