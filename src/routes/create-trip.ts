@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { FastifyInstance } from "fastify";
 import z from "zod";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
@@ -6,8 +5,8 @@ import nodemailer from "nodemailer";
 import { getMailClient } from "../lib/mail";
 import dayjs from "../lib/dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import { prisma } from "../lib/prisma";
 
-const prisma = new PrismaClient();
 
 dayjs.locale('pt-br');
 dayjs.extend(localizedFormat);
