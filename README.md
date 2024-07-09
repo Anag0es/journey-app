@@ -24,7 +24,7 @@ Contribuições são bem-vindas! Se você encontrar problemas, bugs ou tiver sug
 - Typescript
 
 ## Licença 📄
-Este projeto é licenciado sob a Licença Apache 2.0.
+Este projeto é licenciado sob a Licença MIT.
 
 ## Sobre o Autor 👩‍💻
 Técnica em Desenvolvimento de Sistemas, Bacharelado em Ciência da Computação 4/8. Apaixonada por tecnologia voltada para o desenvolvimento back-end e inteligência artificial. Programar é meu hobby e criar bancos de dados é minha paixão.
