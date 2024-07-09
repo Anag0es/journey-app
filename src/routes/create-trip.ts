@@ -2,11 +2,10 @@ import { PrismaClient } from "@prisma/client";
 import { FastifyInstance } from "fastify";
 import z from "zod";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import dayjs from "dayjs";
 import nodemailer from "nodemailer";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-import 'dayjs/locale/pt-br';
 import { getMailClient } from "../lib/mail";
+import dayjs from "../lib/dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 
 const prisma = new PrismaClient();
 
@@ -54,20 +53,19 @@ export async function createTrip(app: FastifyInstance) {
                     starts_At,
                     ends_At,
                     participants: {
-                        createMany: {
-                            data: [
+                            create: [
                                 {
                                     name: owner_name,
                                     email: owner_email,
-                                    phone: '',
                                     is_owner: true,
                                     is_confirmed: true,
                                 },
                                 ...emails_to_invite.map(email => {
-                                    return { email, phone: '' };
+                                    return { email,
+                                        is_confirmed: false,
+                                     };
                                 }),
                             ],
-                        },
                     },
                 },
                 include: {
@@ -94,21 +92,11 @@ export async function createTrip(app: FastifyInstance) {
                         address: owner_email,
                     },
                     subject: 'Viagem criada com sucesso!',
-                    html: `<p>Olá ${owner_name}, sua viagem para ${destination} foi criada com sucesso!</p>`,
+                    html: `<p>Olá ${owner_name}, sua viagem para ${destination} foi criada com sucesso!</p>
+                    Data: ${formattedStartDate} - ${formattedEndDate}
+                    <p> A viagem será enviada para os convidados. Pelo link ${confirmationLink} </p>`,
                 }),
-                ...emails_to_invite.map(email => {
-                    return mail.sendMail({
-                        from: {
-                            name: 'Equipe Trip Organize',
-                            address: 'trip@organize.com',
-                        },
-                        to: email,
-                        subject: 'Confirme sua viagem para ${destination} em ${formattedStartDate}!',
-                        html: `<p>Você foi convidado para uma viagem para ${destination}!</p>
-                        Data: ${formattedStartDate} - ${formattedEndDate}<br>
-                        Confirme sua presença <a href="${confirmationLink}">clicando aqui</a>!`,
-                    });
-                }),
+                console.log('Owner email sent'),
             ];
 
             await Promise.all(messagePromises);
