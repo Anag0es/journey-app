@@ -7,6 +7,7 @@ import { prisma } from "../lib/prisma";
 import nodemailer from "nodemailer";
 import { getMailClient } from "../lib/mail";
 import { ClientError } from "../errors/client-error";
+import { env } from "../env";
 
 dayjs.locale('pt-br');
 dayjs.extend(localizedFormat);
@@ -56,7 +57,7 @@ export async function createInvite(app: FastifyInstance) {
 
 
        
-                const confirmationLink = `http://localhost:3000/participants/${participant.id}/confirm`;
+                const confirmationLink = `${env.API_BASE_URL}/participants/${participant.id}/confirm`;
                 
                 // Send confirmation email 
                 const mail = await getMailClient();

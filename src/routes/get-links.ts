@@ -16,7 +16,7 @@ export async function getLink(app: FastifyInstance) {
                 tripId: z.string().uuid(),
             }),
         },
-    }, async (request, reply) => {
+    }, async (request) => {
         const { tripId } = request.params;
 
         const trip = await prisma.trip.findUnique({

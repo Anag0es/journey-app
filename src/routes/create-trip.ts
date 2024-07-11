@@ -6,6 +6,7 @@ import { getMailClient } from "../lib/mail";
 import dayjs from "../lib/dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { prisma } from "../lib/prisma";
+import { env } from "../env";
 
 
 dayjs.locale('pt-br');
@@ -75,7 +76,7 @@ export async function createTrip(app: FastifyInstance) {
             const formattedStartDate = dayjs(trip.starts_At).format('LL');
             const formattedEndDate = dayjs(trip.ends_At).format('LL');
 
-            const confirmationLink = 'http://localhost:3000/trips/${trip.id}/confirm'
+            const confirmationLink = `${env.API_BASE_URL}/trips/${trip.id}/confirm`;
 
             // Send confirmation email
             const mail = await getMailClient();

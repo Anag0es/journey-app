@@ -7,6 +7,7 @@ import { getMailClient } from "../lib/mail";
 import dayjs from "../lib/dayjs";
 import nodemailer from "nodemailer";
 import { ClientError } from "../errors/client-error";
+import { env } from "../env";
 
 
 
@@ -61,7 +62,7 @@ export async function confirmTrip(app: FastifyInstance) {
 
         await Promise.all([
             trip.participants.map(async (participants) => {
-                const confirmationLink = `http://localhost:3000/participants/${participants.id}/confirm`;
+                const confirmationLink = `${env.API_BASE_URL}/participants/${participants.id}/confirm`;
                 
                 // Send confirmation email 
                 const mail = await getMailClient();
@@ -86,6 +87,6 @@ export async function confirmTrip(app: FastifyInstance) {
         ]);
 
 
-        return reply.redirect('http://localhost:3000/trips/${tripId}')
+        return reply.redirect(`${env.API_BASE_URL}/trips/${tripId}`)
     })
 }
