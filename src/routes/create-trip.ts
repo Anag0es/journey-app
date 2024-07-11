@@ -15,7 +15,7 @@ export async function createTrip(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().post('/trips', {
         schema: {
             body: z.object({
-                destination: z.string().min(4),
+                destination: z.string({required_error: 'Destination is required.'}).min(4),
                 starts_At: z.coerce.date(),
                 ends_At: z.coerce.date(),
                 owner_name: z.string(),

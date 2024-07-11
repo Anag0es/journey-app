@@ -4,6 +4,7 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import dayjs from "../lib/dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { prisma } from "../lib/prisma";
+import { ClientError } from "../errors/client-error";
 
 dayjs.locale('pt-br');
 dayjs.extend(localizedFormat);
@@ -36,7 +37,7 @@ export async function createActivity(app: FastifyInstance) {
 
             if (!trip) {
                 request.log.warn(`Trip not found: ${tripId}`);
-                return reply.status(404).send({ message: 'Trip not found' });
+                return new ClientError('Trip not found');
             }
 
             // Logging trip details
@@ -48,12 +49,12 @@ export async function createActivity(app: FastifyInstance) {
 
             if (occursAtDate.isBefore(tripStartsAt)) {
                 request.log.warn(`Activity date is before trip start date: ${occurs_at} < ${trip.starts_At}`);
-                return reply.status(400).send({ message: 'Cannot create activity before the trip starts' });
+                return new ClientError('Cannot create activity before the trip starts');
             }
 
             if (occursAtDate.isAfter(tripEndsAt)) {
                 request.log.warn(`Activity date is after trip end date: ${occurs_at} > ${trip.ends_At}`);
-                return reply.status(400).send({ message: 'Cannot create activity after the trip ends' });
+                return new ClientError('Cannot create activity after the trip ends');
             }
 
             const activity = await prisma.activity.create({

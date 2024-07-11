@@ -6,6 +6,7 @@ import { prependListener } from "process";
 import { getMailClient } from "../lib/mail";
 import dayjs from "../lib/dayjs";
 import nodemailer from "nodemailer";
+import { ClientError } from "../errors/client-error";
 
 
 
@@ -34,19 +35,11 @@ export async function confirmTrip(app: FastifyInstance) {
         });
 
         if(!trip){
-            return {
-                statusCode: 404,
-                error: 'Not Found',
-                message: 'Trip not found',
-            }
+            return new ClientError('Trip not found');
         }
 
         if(trip.is_confirmed){
-            return {
-                statusCode: 400,
-                error: 'Bad Request',
-                message: 'Trip already confirmed',
-            }
+           return new ClientError('Trip already confirmed')
         }
         
         await prisma.trip.update({

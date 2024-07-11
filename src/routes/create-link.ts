@@ -4,6 +4,7 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import dayjs from "../lib/dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { prisma } from "../lib/prisma";
+import { ClientError } from "../errors/client-error";
 
 dayjs.locale('pt-br');
 dayjs.extend(localizedFormat);
@@ -35,7 +36,7 @@ export async function createLink(app: FastifyInstance) {
 
             if (!trip) {
                 request.log.warn(`Trip not found: ${tripId}`);
-                return reply.status(404).send({ message: 'Trip not found' });
+                return new ClientError('Trip not found');
             }
 
             // Logging trip details

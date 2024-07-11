@@ -9,8 +9,8 @@ import { ClientError } from "../errors/client-error";
 dayjs.locale('pt-br');
 dayjs.extend(localizedFormat);
 
-export async function getLink(app: FastifyInstance) {
-    app.withTypeProvider<ZodTypeProvider>().get('/trips/:tripId/links', {
+export async function getTripDetails(app: FastifyInstance) {
+    app.withTypeProvider<ZodTypeProvider>().get('/trips/:tripId', {
         schema: {
             params: z.object({
                 tripId: z.string().uuid(),
@@ -20,12 +20,16 @@ export async function getLink(app: FastifyInstance) {
         const { tripId } = request.params;
 
         const trip = await prisma.trip.findUnique({
+            select:{
+                id: true,
+                destination: true,
+                starts_At: true,
+                ends_At: true,
+                is_confirmed: true,
+            },
             where: {
                 id: tripId,
-            },
-            include: {
-                links: true
-            },
+            }
         });
 
         if(!trip) {
@@ -33,6 +37,6 @@ export async function getLink(app: FastifyInstance) {
         }
 
 
-        return { links : trip.links};
+        return { trip : trip};
     });
 }

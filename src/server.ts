@@ -8,6 +8,12 @@ import { createActivity } from './routes/create-activity';
 import { getActivities } from './routes/get-activities';
 import { createLink } from './routes/create-link';
 import { getLink } from './routes/get-links';
+import { getParticipants } from './routes/get-participants';
+import { createInvite } from './routes/create-invite';
+import { updateTrip } from './routes/update-trip';
+import { getTripDetails } from './routes/get-trip-details';
+import { getParticipant } from './routes/get-participant';
+import { errorHandler } from './error-handler';
 
 const app = fastify();
 
@@ -22,13 +28,26 @@ app.register(cors, {
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
+app.setErrorHandler(errorHandler);
+
 createTrip(app);
 confirmTrip(app);
-confirmParticipants(app);
-createActivity(app);
+
 getActivities(app);
-createLink(app);
+getTripDetails(app);
+createActivity(app);
+updateTrip(app);
+
+createInvite(app);
+
 getLink(app);
+createLink(app);
+
+getParticipants(app);
+getParticipant(app);
+confirmParticipants(app);
+
+
 
 
 app.listen({port: 3000}).then(() => {

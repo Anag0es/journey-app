@@ -9,8 +9,8 @@ import { ClientError } from "../errors/client-error";
 dayjs.locale('pt-br');
 dayjs.extend(localizedFormat);
 
-export async function getLink(app: FastifyInstance) {
-    app.withTypeProvider<ZodTypeProvider>().get('/trips/:tripId/links', {
+export async function getParticipants(app: FastifyInstance) {
+    app.withTypeProvider<ZodTypeProvider>().get('/trips/:tripId/participants', {
         schema: {
             params: z.object({
                 tripId: z.string().uuid(),
@@ -24,7 +24,14 @@ export async function getLink(app: FastifyInstance) {
                 id: tripId,
             },
             include: {
-                links: true
+                participants: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        is_confirmed: true
+                    }
+                }
             },
         });
 
@@ -32,7 +39,7 @@ export async function getLink(app: FastifyInstance) {
             return new ClientError('Trip not found');
         }
 
+        return { participants: trip.participants }
 
-        return { links : trip.links};
     });
 }
